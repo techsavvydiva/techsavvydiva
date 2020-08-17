@@ -1,5 +1,5 @@
-### Hi there 👋
-
+### Hi there, I'm Nica 👋🏽
+![Tech Savvy Diva] (/Downloads.1500x1500.jpeg)
 <!--
 **techsavvydiva/techsavvydiva** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
