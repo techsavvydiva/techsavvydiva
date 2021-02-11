@@ -1,5 +1,5 @@
 ### Hi there, I'm Nica 👋🏽
-Format: ![Logo](http://techsavvydiva.com/home/wp-content/uploads/2016/09/TechSavvyDiva-Gold-Logo-Twitter-Cover1.jpg)
+![Logo](http://techsavvydiva.com/home/wp-content/uploads/2016/09/TechSavvyDiva-Gold-Logo-Twitter-Cover1.jpg)
 <!--
 **techsavvydiva/techsavvydiva** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
