@@ -1,15 +1,22 @@
 ### Hi there, I'm Nica 👋🏽
-![Logo](http://techsavvydiva.com/home/wp-content/uploads/2016/09/TechSavvyDiva-Gold-Logo-Twitter-Cover1.jpg)
+![Logo](/Users/techsavvydiva/Documents/Personal Rebrand/Logo/Pink Logo.png)
 
-I am a software engineer. I am a technology and innovation leader. I am a content creator in audio, video, and web. Creating technology and cultivating an environment where everyone is included is my jam. Currently, I am a Senior Software Engineer at GM focusing on data & analytics.
+Engineer. Leader. Creator.
+With champagne taste and a penchant for beautiful things. Bridging complex tech innovation and intentional living. Your insider guide to tech that matters and elevated experiences.
+#TheTechCurator
+
+Decoding it all on snobOS Podcast and > beauTECHfication_
+
+AI | Data | ML
 
 Learn more about my…
 - Engineering updates and work on [LinkedIn](www.linkedin.com/in/yahnicamontford)
-- Technology innovations as CTO of [WeddGlam](www.weddglam.com)
-- Content creation with the snobOS [Podcast](www.snoboscast.com) and [YouTube](https://www.youtube.com/channel/UCDUC8MuIVjBY67D7Z4UezkQ) channel
-- Internet communications & shenanigans on [Twitter](http://www.twitter.com/techsavvydiva), [Web](www.techsavvydiva.com), and iam@techsavvydiva.com
+- Content creation with the  [snobOS Podcast](www.snoboscast.com), [>beauTECHfication_ Podcast](beauTECHfication.com)  and [TechSavvyDiva YouTube](https://www.youtube.com/techsavvydiva) channel
+- Internet communications & shenanigans on [Web](www.techsavvydiva.com), and iam@techsavvydiva.com
+  
 <!--
 **techsavvydiva/techsavvydiva** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+- Technology innovations as CTO of [WeddGlam](www.weddglam.com)
 - 🔭 I’m currently working on ...
 - 🌱 I’m currently learning ...
 - 👯 I’m looking to collaborate on ...
