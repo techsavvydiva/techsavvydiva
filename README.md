@@ -1,8 +1,11 @@
-### Hi there, I'm Nica 👋🏽
-![Image](/Users/techsavvydiva/Documents/Personal%Rebrand/Logo/Pink Logo.png)
+![Logo](http://techsavvydiva.com/wp-content/uploads/2025/10/Pink-Logo-1-scaled-e1761589660982.png)
+
+### Nica Montford
 
 Engineer. Leader. Creator.
+
 With champagne taste and a penchant for beautiful things. Bridging complex tech innovation and intentional living. Your insider guide to tech that matters and elevated experiences.
+
 #TheTechCurator
 
 Decoding it all on snobOS Podcast and > beauTECHfication_
