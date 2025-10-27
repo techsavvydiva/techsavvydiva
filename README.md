@@ -1,5 +1,5 @@
 ### Hi there, I'm Nica 👋🏽
-![Image](/Users/techsavvydiva/Documents/Personal Rebrand/Logo/Pink Logo.png)
+![Image](/Users/techsavvydiva/Documents/Personal%Rebrand/Logo/Pink Logo.png)
 
 Engineer. Leader. Creator.
 With champagne taste and a penchant for beautiful things. Bridging complex tech innovation and intentional living. Your insider guide to tech that matters and elevated experiences.
