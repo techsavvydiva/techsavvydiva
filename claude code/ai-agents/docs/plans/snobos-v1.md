@@ -7,9 +7,17 @@ Build the first working Snobos workflow: a weekly, comprehensive rundown of disc
 ## Reporting Window
 
 - The window is configurable in the Snobos YAML configuration, with a default of seven days.
-- Each run takes a recording day as its end date. Include that recording day and the six preceding local calendar days.
+- Each run takes a recording/show day as its end date. Include that day and the six preceding local calendar days.
 - Interpret dates in `America/New_York`; use this timezone for the reporting window and date displayed in the rundown.
 - Keep the window logic independent of the machine's local timezone.
+
+## Episode Numbering
+
+- Store the episode-number anchor in the Snobos YAML: show date `2026-10-14` is episode `383`.
+- A show normally occurs every Wednesday and increments the episode number by one, regardless of which co-host produces it. The next show produced by the user is episode `385` on `2026-10-28`.
+- Configure skipped show dates (for holidays or off weeks) in YAML. A skipped date does not consume an episode number; subsequent episode numbers advance only for shows that occur.
+- Add a CLI flag to override the calculated episode number for a run.
+- Include the episode number and show date at the top of every generated file. Use the episode number in generated filenames.
 
 ## Sources And Search
 
@@ -22,16 +30,30 @@ Build the first working Snobos workflow: a weekly, comprehensive rundown of disc
 
 ## Rundown Format
 
-Write Markdown grouped under these segments, in this order:
+Write Markdown grouped under these segments, in this order, using the exact headings shown:
 
-1. The Lowdown (Apple stories)
-2. 2nd String (non-Apple tech)
-3. For the Culture (Black culture and pop culture)
-4. The Hookup (consumer safety and tips)
+1. The Lowdown — 3 Apple stories
+2. 2nd String — 1 non-Apple tech story
+3. For The Culture — 1 story (Black culture/pop culture)
+4. The Hookup — 1 item (consumer safety/tips)
 
-Each candidate includes a headline, a one- or two-sentence summary, source link(s), and date. Use the story's publication date when available; make missing dates explicit rather than inventing one. A story should appear in the most relevant segment, without being omitted merely because it is not a top pick.
+Each candidate includes a headline, a one- or two-sentence summary, source link(s), and date. Use the story's publication date when available; make missing dates explicit rather than inventing one. The counts in the segment headings describe the planned show allocation; Stage 1 remains a comprehensive, unfiltered candidate list and must not truncate candidates to those counts or curate a shortlist.
 
-Save each run to `data/snobos/rundowns/YYYY-MM-DD.md`, using the recording day for the filename. The rundowns directory is generated output and must remain ignored by Git.
+Save each Stage 1 run to `data/snobos/rundowns/<episode> Rundown.md` (for example, `data/snobos/rundowns/383 Rundown.md`). The rundown directory is generated output and must remain ignored by Git.
+
+## Later Stages (Not In V1 Scope)
+
+- Stage 2 will produce a slate named `<episode> Slate.md` (for example, `383 Slate.md`). It will use the episode number and show date at the top.
+- Stage 3 will produce show notes named `<episode> Show Notes.md` (for example, `383 Show Notes.md`), also with the episode number and show date at the top. Stage 3 must follow the existing show notes template; adding a copy of that template to the repository is a prerequisite before Stage 3 begins.
+- Stage 2 and Stage 3 are future work and do not change Stage 1's candidate-gathering scope.
+
+## Future Consideration: snobist Show
+
+The snobist Show is a separate 15-minute exclusive show for paying Patreon supporters. It is documented here only as a future consideration; do not design or build it as part of this plan. Open questions for later:
+
+- Does it need its own sourcing or show notes?
+- Does it share the main show's reporting window?
+- How should its content differ from the main show?
 
 ## Cost And Secret Guardrails
 
@@ -53,10 +75,10 @@ Stop after setup and after each numbered step for user review. Do not start a su
 
 ### Step 1: Runtime And Configuration
 
-- Make the CLI execute a Snobos run and accept the recording day.
+- Make the CLI execute a Snobos run and accept the recording/show day plus an optional episode-number override.
 - Load the Snobos YAML settings and `configs/snobos.env` secret.
 - Keep the direct Anthropic client for v1; do not add LangGraph.
-- Define typed, framework-agnostic settings and story data structures.
+- Define typed, framework-agnostic settings and story data structures, including the episode anchor and skipped show dates.
 
 ### Step 2: Search And RSS Sources
 
@@ -68,12 +90,12 @@ Stop after setup and after each numbered step for user review. Do not start a su
 
 - Collect candidates for the configured seven-day window ending on the supplied recording day.
 - Normalize dates to the configured timezone, deduplicate overlaps while retaining sources, and assign candidates to the four show segments.
-- Keep candidate collection comprehensive and unranked; report source-level failures without silently presenting a partial run as complete.
+- Keep candidate collection comprehensive and unranked; the planned segment counts are not a limit on candidate collection. Report source-level failures without silently presenting a partial run as complete.
 
 ### Step 4: Rundown Generation And Output
 
 - Generate the grouped Markdown rundown with headlines, short summaries, links, and dates.
-- Write it to `data/snobos/rundowns/YYYY-MM-DD.md` and log search count and token usage.
+- Put the episode number and show date at the top, write it to `data/snobos/rundowns/<episode> Rundown.md`, and log search count and token usage.
 
 ### Step 5: Tests And End-To-End Check
 
@@ -86,4 +108,5 @@ Stop after setup and after each numbered step for user review. Do not start a su
 - The collection window is seven local calendar days, inclusive of the recording day, in `America/New_York`, unless changed in YAML.
 - Claude web searches never exceed the configured cap; the default is 10.
 - RSS and web candidates are combined, deduplicated with source links retained, and grouped into the four segments without ranking or shortlisting.
-- A dated Markdown rundown is written to the required ignored output directory, with search count and token usage logged at run end.
+- Episode numbering follows the configured anchor and skipped dates, with an explicit CLI override available.
+- An episode-numbered Markdown rundown with episode number and show date is written to the required ignored output directory, with search count and token usage logged at run end.
