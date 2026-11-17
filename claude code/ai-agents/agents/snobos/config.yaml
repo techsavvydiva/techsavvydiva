@@ -1,6 +1,16 @@
 name: snobos
 description: Apple-focused technology podcast research and content agent
 default_model: claude-sonnet-4-5
+timezone: America/New_York
+window_days: 7
+max_web_searches_per_run: 10
+episode:
+  anchor_date: "2026-10-14"
+  anchor_number: 383
+  skipped_show_dates: []
+producer_rotation:
+  every_n_shows: 2
+  user_anchor_episode: 385
 allowed_tools:
   - web_search
   - fetch_page

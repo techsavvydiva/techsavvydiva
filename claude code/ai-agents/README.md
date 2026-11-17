@@ -192,17 +192,14 @@ uv sync
 
 ## Agent configuration
 
-Each agent has its own environment file under `configs/`.
+Each agent's YAML file is authoritative for its model and non-secret settings. Per-agent environment files under `configs/` hold secrets only. Snobos specifically loads `ANTHROPIC_API_KEY` from `configs/snobos.env`; it does not use the root `.env` as a fallback.
 
 ### Snobos
 
 `configs/snobos.env`
 
 ```env
-AGENT_NAME=snobos
 ANTHROPIC_API_KEY=sk-ant-your-key-here
-MODEL_NAME=claude-sonnet-4-5
-DATA_DIR=data/snobos
 ```
 
 ### Synthesized Future
@@ -210,10 +207,7 @@ DATA_DIR=data/snobos
 `configs/synthesized_future.env`
 
 ```env
-AGENT_NAME=synthesized_future
 ANTHROPIC_API_KEY=sk-ant-your-key-here
-MODEL_NAME=claude-sonnet-4-5
-DATA_DIR=data/synthesized_future
 ```
 
 ### TechSavvyDiva
@@ -221,10 +215,7 @@ DATA_DIR=data/synthesized_future
 `configs/techsavvydiva.env`
 
 ```env
-AGENT_NAME=techsavvydiva
 ANTHROPIC_API_KEY=sk-ant-your-key-here
-MODEL_NAME=claude-sonnet-4-5
-DATA_DIR=data/techsavvydiva
 ```
 
 Use a separate Anthropic API key for each agent. Name the keys clearly in the Anthropic Console, for example:
@@ -258,34 +249,18 @@ DATA_DIR=data/snobos
 
 Never commit real API keys.
 
-## Running an agent
+## Running Snobos (Step 1)
 
-The CLI selects an agent, loads its configuration, and executes a task:
-
-```bash
-uv run python app/main.py \
-  --agent snobos \
-  --task "Research the latest Apple developer platform changes for next week's episode"
-```
-
-Other examples:
+Step 1 validates Snobos settings and its secret, calculates the episode number and reporting window, then prints a setup summary. It does not search for stories or call the model yet.
 
 ```bash
-uv run python app/main.py \
-  --agent synthesized_future \
-  --task "Identify emerging opportunities in AI developer platforms"
+uv run python -m app.main --show-date 2026-10-14
 ```
+
+Override an episode number when the schedule needs a correction:
 
 ```bash
-uv run python app/main.py \
-  --agent techsavvydiva \
-  --task "Prepare this week's priority review"
-```
-
-Outputs are written under the selected agent’s data directory, for example:
-
-```text
-data/snobos/2026-10-14-apple-developer-platform-brief.md
+uv run python -m app.main --show-date 2026-10-28 --episode-number 385
 ```
 
 ## Debugging in VS Code

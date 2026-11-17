@@ -29,13 +29,14 @@ Every agent in this repo follows five principles:
 **What gets built**
 - A command-line entry point to run the agent for a given show date
 - Loading of the Snobos YAML (model, settings, rotation, episode anchor) and the `snobos.env` secret
-- Show-window math: previous show Wednesday through the show date, America/New_York
+- Show-window math: previous occurring show Wednesday through the show date, inclusive, in America/New_York
 - Episode-number calculation from the anchor (episode 383 on Oct 14, 2026), with skipped-week handling and a manual override
 
 **Why it's built this way**
 - This is plumbing with exact right answers, so it's built first and tested without calling the model.
 - If the window or episode number is wrong, every later step is wrong. Catching that here is cheap.
 - Config lives in YAML (versioned, reviewable) and secrets live in env files (never committed). Keeping them separate means you can change behavior without touching secrets and share config without leaking keys.
+- The window covers the previous occurring Wednesday through the show Wednesday, inclusive. For the normal seven-day interval, this is eight calendar dates: episode 383 on Oct 14 spans Oct 7–14.
 
 **Reusable for other agents:** config loading, env/secret loading, and the CLI structure.
 

@@ -6,8 +6,10 @@ Build the first working Snobos workflow: a weekly, comprehensive rundown of disc
 
 ## Reporting Window
 
-- The window is configurable in the Snobos YAML configuration, with a default of seven days.
-- Each run takes a recording/show day as its end date. Include that day and the six preceding local calendar days.
+- The window interval is configurable in the Snobos YAML configuration, defaulting to the normal seven-day show interval.
+- Each run takes a recording/show Wednesday as its end date. Start on the previous Wednesday when a show occurred and include both Wednesdays.
+- For episode 383 on October 14, 2026, the inclusive window is October 7 through October 14, 2026 (eight calendar dates over a seven-day interval).
+- If the prior scheduled Wednesday was skipped, start at the previous Wednesday when a show occurred.
 - Interpret dates in `America/New_York`; use this timezone for the reporting window and date displayed in the rundown.
 - Keep the window logic independent of the machine's local timezone.
 
@@ -88,7 +90,7 @@ Stop after setup and after each numbered step for user review. Do not start a su
 
 ### Step 3: Weekly Candidate Collection
 
-- Collect candidates for the configured seven-day window ending on the supplied recording day.
+- Collect candidates from the previous occurring show Wednesday through the supplied recording Wednesday, inclusive.
 - Normalize dates to the configured timezone, deduplicate overlaps while retaining sources, and assign candidates to the four show segments.
 - Keep candidate collection comprehensive and unranked; the planned segment counts are not a limit on candidate collection. Report source-level failures without silently presenting a partial run as complete.
 
@@ -105,7 +107,7 @@ Stop after setup and after each numbered step for user review. Do not start a su
 ## V1 Completion Criteria
 
 - Running the CLI for a recording day uses the Snobos YAML settings and only the Snobos secret file by default.
-- The collection window is seven local calendar days, inclusive of the recording day, in `America/New_York`, unless changed in YAML.
+- The collection window runs from the previous occurring show Wednesday through the recording Wednesday, inclusive, in `America/New_York`; the normal weekly interval is seven days and includes eight calendar dates.
 - Claude web searches never exceed the configured cap; the default is 10.
 - RSS and web candidates are combined, deduplicated with source links retained, and grouped into the four segments without ranking or shortlisting.
 - Episode numbering follows the configured anchor and skipped dates, with an explicit CLI override available.

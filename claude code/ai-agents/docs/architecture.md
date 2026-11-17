@@ -4,7 +4,7 @@ This document distinguishes what exists in the repository from decisions and wor
 
 ## Current Repository Layout
 
-- `app/` — shared runtime package. `main.py` defines parsing for `--agent` and `--task` and a call to the current environment loader inside `main()`, but does not invoke `main()` when run as a script; `config.py` selects a per-agent `.env` file; `llm.py` provides a direct Anthropic client factory. `graph.py`, `models.py`, `storage.py`, and files under `app/tools/` are placeholders/empty.
+- `app/` — shared runtime package. `main.py` now resolves a Snobos show date, config, secret, episode number, producer rotation, and reporting window; `config.py` validates Snobos YAML and reads only `configs/snobos.env`; `schedule.py` contains pure date/episode helpers; `llm.py` builds a direct Anthropic client from an explicit key. `graph.py`, `models.py`, `storage.py`, and files under `app/tools/` remain placeholders/empty.
 - `agents/snobos/` — Snobos package with `agent.py`, `prompts.py`, `tools.py`, and a non-empty `config.yaml`. The YAML currently has agent metadata, a model name, tool allowlists, approval-required tool names, and an output directory; it is not loaded by the shared runtime.
 - `agents/techsavvydiva/` — personal-agent package with the same scaffolded module names; no functioning workflow is implemented.
 - `agents/synthesized_future/` — business/consulting-agent package with the same scaffolded module names; no functioning workflow is implemented.
@@ -26,20 +26,21 @@ This document distinguishes what exists in the repository from decisions and wor
 
 ### Current implementation
 
-- The shared `app/config.py` maps agent names to `configs/<agent>.env` and loads dotenv values. It does not parse per-agent YAML, so the agreed YAML authority/secrets-only separation is not implemented yet.
-- `app/llm.py` reads `ANTHROPIC_API_KEY` from process environment and constructs an Anthropic SDK client.
-- Snobos YAML exists, but the TechSavvyDiva and Synthesized Future YAML files are placeholders. YAML settings are not currently applied to the model client.
+- `app/config.py` now parses Snobos YAML into an immutable settings object and reads `ANTHROPIC_API_KEY` from the explicitly selected Snobos env file without modifying process environment. Other agents' YAML/env loading is not implemented yet.
+- `app/llm.py` constructs the Anthropic SDK client only from a key passed by the caller; the CLI validates this client setup but does not make a model request.
+- Snobos YAML is loaded for Step 1 settings. The TechSavvyDiva and Synthesized Future YAML files remain placeholders.
 - `.gitignore` ignores `.env`, `configs/*.env`, `data/`, and `data/snobos/rundowns/`; it does not currently ignore `secrets/`.
 
 ## Planned Snobos Workflow
 
-The following pipeline is the intended design, not current runtime behavior:
+The complete pipeline below is the intended design. Step 1 is implemented; all sourcing and downstream stages remain planned:
 
 ```text
 show date + episode selection
         |
         v
-show window (configurable; default 7 days, America/New_York)
+show window (previous occurring Wednesday through show date, inclusive,
+             America/New_York; skipped weeks extend the window)
         |
         +--> RSS: 9to5Mac, AppleInsider, MacRumors
         +--> Claude built-in web search (provider interface; cap default 10)
@@ -69,7 +70,7 @@ Stage 1 local rundown: data/snobos/rundowns/<episode> Rundown.md
 
 ### Stage distinctions
 
-- **Stage 1 (planned v1):** Gather a comprehensive, unranked pool of story candidates from RSS and web search; normalize, verify, deduplicate, group, and write a Markdown rundown. Segment allocations describe a later show slate, not a limit on Stage 1 candidates.
+- **Stage 1 (in progress):** Step 1 CLI/configuration/calendar setup is implemented. RSS/web collection, normalized records, verification, deduplication, segment grouping, and rundown output remain planned. Segment allocations describe a later show slate, not a limit on Stage 1 candidates.
 - **Stage 2 (planned):** Prepare the episode slate and show logistics. V2 includes Google Docs output, scheduling the weekly livestream to YouTube, Patreon supporter notification, and automatic draft-rundown runs ahead of the user's show weeks.
 - **Stage 3 (planned):** Create show notes using the existing show-notes template. A copy of the template must be added to the repo before implementation. V2 describes Google Docs output using this template.
 - **V3 (planned):** Episode distribution and video teasers to the platforms documented in `docs/plans/snobos-v3.md`. Every publishing/notification action requires explicit approval. Nothing auto-posts.
@@ -80,9 +81,9 @@ Stage 1 local rundown: data/snobos/rundowns/<episode> Rundown.md
 - Anchor: Wednesday, October 14, 2026 is episode 383. Store this date and episode number in Snobos YAML.
 - The main show normally occurs every Wednesday. Each show that occurs increments the episode by one regardless of producer.
 - A configured skipped show date (holiday/off week) consumes no episode number. A CLI episode-number override is planned for exceptional corrections.
-- The user's producer rotation is every other show, anchored at episode 383 on October 14, 2026; the next user-produced show is episode 385 on October 28, 2026.
-- V2 scheduled rundown generation is planned ahead of user-produced weeks, on a two-week cadence anchored to that user rotation. Exact lead time, skip handling, and scheduler host remain open decisions.
-- All dates/windows are interpreted in `America/New_York`; the default research window is seven local calendar days ending on the show date, inclusive of that date.
+- The user's producer rotation is every other show, with episode 385 as the first user-produced episode after the episode 383 anchor. Step 1 reads this rotation and can identify user-produced episode numbers.
+- V2 scheduled rundown generation is planned ahead of user-produced weeks, on a two-week cadence anchored to that rotation. Exact lead time, skip handling, and scheduler host remain open decisions.
+- All dates/windows are interpreted in `America/New_York`; the research window starts on the previous Wednesday when a show occurred and ends on the current show date, inclusive. A normal seven-day interval contains eight calendar dates; skipped show weeks extend the window to the prior occurring show.
 
 ## Outputs And Git
 
@@ -105,6 +106,6 @@ Stage 1 local rundown: data/snobos/rundowns/<episode> Rundown.md
 
 ## Shared Platform And Other Agents
 
-The intended architecture keeps common CLI/configuration, Anthropic client construction, data contracts, output storage, and reusable read-only tools under `app/`. Brand-specific prompts, tools, settings, and workflows belong in their respective `agents/<name>/` packages. This boundary is planned; at present the shared workflow, storage, and tool implementations are empty, and the three agents do not execute tasks.
+The intended architecture keeps common CLI/configuration, Anthropic client construction, date helpers, data contracts, output storage, and reusable read-only tools under `app/`. Brand-specific prompts, tools, settings, and workflows belong in their respective `agents/<name>/` packages. Step 1 implements the shared config, client construction, and date helpers; source adapters, workflow, storage, and agent execution remain unbuilt. The CLI currently resolves and reports setup only; it does not yet execute a sourcing workflow.
 
 The project metadata declares Python `>=3.12` and LangChain/LangGraph dependencies. V1's approved direction is a direct Anthropic client and framework-agnostic tools/prompts; LangGraph is deferred. `uv.lock` was found inconsistent with the Python minimum and should be refreshed when dependency setup work is approved.
